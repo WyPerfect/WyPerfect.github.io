@@ -3,12 +3,12 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Hexo
+title: WyPerfect
 subtitle: ''
 description: ''
 keywords:
-author: John Doe
-language: en
+author: WyPerfect
+language: zh-CN
 timezone: ''
 
 # URL
@@ -69,6 +69,10 @@ default_category: uncategorized
 category_map:
 tag_map:
 
+# Tag index at /tags/ (needed for NexT menu)
+tag_generator:
+  enable_index_page: true
+
 # Metadata elements
 ## https://developer.mozilla.org/en-US/docs/Web/HTML/Element/meta
 meta_generator: true
@@ -96,7 +100,7 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: landscape
+theme: next
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
