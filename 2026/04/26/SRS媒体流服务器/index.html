@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#222" media="(prefers-color-scheme: dark)"><meta name="generator" content="Hexo 8.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css" integrity="sha256-VHqXKFhhMxcpubYf9xiWdCiojEbY9NexQ4jh8AxbvcM=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"wyperfect.github.io","root":"/","images":"/images","scheme":"Gemini","darkmode":true,"version":"8.27.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"hljswrap":true,"codeblock":{"theme":{"light":"default","dark":"stackoverflow-dark"},"prism":{"light":"prism","dark":"prism-dark"},"copy_button":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"language":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"duration":200,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"}}</script><script src="/js/config.js" defer></script>
+
+    <meta name="description" content="简介SRS（Simple Realtime Server）是一款开源实时媒体服务器，适配面广、上手成本低，在直播与 RTC 场景里应用广泛，社区与文档都比较成熟。  部署方式与版本 推荐方式：Docker 部署。 版本建议：SRS 6 功能较新且已稳定；下文若使用镜像标签，请与所选大版本保持一致（示例中部分命令为 5，替换为 6 时对应调整镜像名即可）。  拉取镜像1docker pull oss">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SRS媒体流服务器">
+<meta property="og:url" content="https://wyperfect.github.io/2026/04/26/SRS%E5%AA%92%E4%BD%93%E6%B5%81%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
+<meta property="og:site_name" content="WyPerfect">
+<meta property="og:description" content="简介SRS（Simple Realtime Server）是一款开源实时媒体服务器，适配面广、上手成本低，在直播与 RTC 场景里应用广泛，社区与文档都比较成熟。  部署方式与版本 推荐方式：Docker 部署。 版本建议：SRS 6 功能较新且已稳定；下文若使用镜像标签，请与所选大版本保持一致（示例中部分命令为 5，替换为 6 时对应调整镜像名即可）。  拉取镜像1docker pull oss">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2026-04-25T16:35:37.000Z">
+<meta property="article:modified_time" content="2026-04-25T17:55:36.895Z">
+<meta property="article:author" content="WyPerfect">
+<meta property="article:tag" content="Docker">
+<meta property="article:tag" content="SRS">
+<meta property="article:tag" content="WebRTC">
+<meta property="article:tag" content="流媒体">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://wyperfect.github.io/2026/04/26/SRS%E5%AA%92%E4%BD%93%E6%B5%81%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://wyperfect.github.io/2026/04/26/SRS%E5%AA%92%E4%BD%93%E6%B5%81%E6%9C%8D%E5%8A%A1%E5%99%A8/","path":"2026/04/26/SRS媒体流服务器/","title":"SRS媒体流服务器"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>SRS媒体流服务器 | WyPerfect</title>
+  
+
+
+
+
+
+
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous" defer></script>
+<script src="/js/utils.js" defer></script><script src="/js/motion.js" defer></script><script src="/js/sidebar.js" defer></script><script src="/js/next-boot.js" defer></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">WyPerfect</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+  </ul>
+</nav>
+
+
+
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%83%A8%E7%BD%B2"><span class="nav-number">2.</span> <span class="nav-text">部署</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B9%E5%BC%8F%E4%B8%8E%E7%89%88%E6%9C%AC"><span class="nav-number">2.1.</span> <span class="nav-text">方式与版本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E5%8F%96%E9%95%9C%E5%83%8F"><span class="nav-number">2.2.</span> <span class="nav-text">拉取镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8E%9F%E7%94%9F%E5%90%AF%E5%8A%A8%EF%BC%88%E4%BB%A5-WebRTC-WHIP-%E6%80%9D%E8%B7%AF%E4%B8%BA%E4%BE%8B%EF%BC%89"><span class="nav-number">2.3.</span> <span class="nav-text">原生启动（以 WebRTC &#x2F; WHIP 思路为例）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-%E5%90%AF%E5%8A%A8%EF%BC%88RTC%EF%BC%89"><span class="nav-number">2.4.</span> <span class="nav-text">Docker 启动（RTC）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%A6%81%E7%82%B9%E8%AF%B4%E6%98%8E"><span class="nav-number">2.5.</span> <span class="nav-text">配置要点说明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RTMP-%E6%8E%A8%E6%B5%81-WebRTC-%E6%8B%89%E6%B5%81%E7%A4%BA%E4%BE%8B"><span class="nav-number">2.6.</span> <span class="nav-text">RTMP 推流 + WebRTC 拉流示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%91%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%83%A8%E7%BD%B2%E4%B8%8E%E5%AE%89%E5%85%A8"><span class="nav-number">3.</span> <span class="nav-text">云服务器部署与安全</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">4.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3"><span class="nav-number">5.</span> <span class="nav-text">官方文档</span></a></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">WyPerfect</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+        <a href="/archives/">
+          <span class="site-state-item-count">4</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span>
+      </div>
+  </nav>
+</div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://wyperfect.github.io/2026/04/26/SRS%E5%AA%92%E4%BD%93%E6%B5%81%E6%9C%8D%E5%8A%A1%E5%99%A8/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="WyPerfect">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="WyPerfect">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="SRS媒体流服务器 | WyPerfect">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          SRS媒体流服务器
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2026-04-26 00:35:37 / 修改时间：01:55:36" itemprop="dateCreated datePublished" datetime="2026-04-26T00:35:37+08:00">2026-04-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p><a target="_blank" rel="noopener" href="https://github.com/ossrs/srs">SRS</a>（Simple Realtime Server）是一款开源实时媒体服务器，适配面广、上手成本低，在直播与 RTC 场景里应用广泛，社区与文档都比较成熟。</p>
+<hr>
+<h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><h3 id="方式与版本"><a href="#方式与版本" class="headerlink" title="方式与版本"></a>方式与版本</h3><ul>
+<li><strong>推荐方式</strong>：Docker 部署。</li>
+<li><strong>版本建议</strong>：SRS 6 功能较新且已稳定；下文若使用镜像标签，请与所选大版本保持一致（示例中部分命令为 <code>5</code>，替换为 <code>6</code> 时对应调整镜像名即可）。</li>
+</ul>
+<h3 id="拉取镜像"><a href="#拉取镜像" class="headerlink" title="拉取镜像"></a>拉取镜像</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker pull ossrs/srs:6</span><br></pre></td></tr></table></figure>
+
+<h3 id="原生启动（以-WebRTC-WHIP-思路为例）"><a href="#原生启动（以-WebRTC-WHIP-思路为例）" class="headerlink" title="原生启动（以 WebRTC &#x2F; WHIP 思路为例）"></a>原生启动（以 WebRTC &#x2F; WHIP 思路为例）</h3><p>设置环境变量后启动 SRS：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">env</span> CANDIDATE=<span class="string">&quot;192.168.3.10&quot;</span> \</span><br><span class="line">  ./objs/srs -c conf/rtc.conf</span><br></pre></td></tr></table></figure>
+
+<h3 id="Docker-启动（RTC）"><a href="#Docker-启动（RTC）" class="headerlink" title="Docker 启动（RTC）"></a>Docker 启动（RTC）</h3><p>先导出候选 IP，再运行容器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CANDIDATE=<span class="string">&quot;192.168.3.10&quot;</span></span><br><span class="line">docker run --<span class="built_in">rm</span> --<span class="built_in">env</span> CANDIDATE=<span class="variable">$CANDIDATE</span> \</span><br><span class="line">  -p 1935:1935 -p 8080:8080 -p 1985:1985 -p 8000:8000/udp \</span><br><span class="line">  registry.cn-hangzhou.aliyuncs.com/ossrs/srs:6 \</span><br><span class="line">  objs/srs -c conf/rtc.conf</span><br></pre></td></tr></table></figure>
+
+<p>按需修改 <code>rtc.conf</code>。下面为常见 RTC 片段结构示例（具体以你仓库中的完整配置为准）：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br></pre></td><td class="code"><pre><span class="line">rtc_server &#123;</span><br><span class="line">    # Whether enable WebRTC server.</span><br><span class="line">    # Overwrite by env SRS_RTC_SERVER_ENABLED</span><br><span class="line">    # default: off</span><br><span class="line">    enabled on;</span><br><span class="line">    # The udp listen port, we will reuse it for connections.</span><br><span class="line">    # Overwrite by env SRS_RTC_SERVER_LISTEN</span><br><span class="line">    # default: 8000</span><br><span class="line">    listen 8000;</span><br><span class="line">    # For WebRTC over TCP directly, not TURN, see https://github.com/ossrs/srs/issues/2852</span><br><span class="line">    # Some network does not support UDP, or not very well, so we use TCP like HTTP/80 port for firewall traversing.</span><br><span class="line">    tcp &#123;</span><br><span class="line">        # Whether enable WebRTC over TCP.</span><br><span class="line">        # Overwrite by env SRS_RTC_SERVER_TCP_ENABLED</span><br><span class="line">        # Default: off</span><br><span class="line">        enabled off;</span><br><span class="line">        # The TCP listen port for WebRTC. Highly recommend is some normally used ports, such as TCP/80, TCP/443,</span><br><span class="line">        # TCP/8000, TCP/8080 etc. However SRS default to TCP/8000 corresponding to UDP/8000.</span><br><span class="line">        # Overwrite by env SRS_RTC_SERVER_TCP_LISTEN</span><br><span class="line">        # Default: 8000</span><br><span class="line">        listen 8000;</span><br><span class="line">    &#125;</span><br><span class="line">    # The protocol for candidate to use, it can be:</span><br><span class="line">    #       udp         Generate UDP candidates. Note that UDP server is always enabled for WebRTC.</span><br><span class="line">    #       tcp         Generate TCP candidates. Fail if rtc_server.tcp(WebRTC over TCP) is disabled.</span><br><span class="line">    #       all         Generate UDP+TCP candidates. Ignore if rtc_server.tcp(WebRTC over TCP) is disabled.</span><br><span class="line">    # Note that if both are connected, we will use the first connected(DTLS done) one.</span><br><span class="line">    # Overwrite by env SRS_RTC_SERVER_PROTOCOL</span><br><span class="line">    # Default: udp</span><br><span class="line">    protocol udp;</span><br><span class="line">    # The exposed candidate IPs, response in SDP candidate line. It can be:</span><br><span class="line">    #       *           Retrieve server IP automatically, from all network interfaces.</span><br><span class="line">    #       $CANDIDATE  Read the IP from ENV variable, use * if not set.</span><br><span class="line">    #       x.x.x.x     A specified IP address or DNS name, use * if 0.0.0.0.</span><br><span class="line">    # @remark For Firefox, the candidate MUST be IP, MUST NOT be DNS name, see https://bugzilla.mozilla.org/show_bug.cgi?id=1239006</span><br><span class="line">    # @see https://ossrs.net/lts/zh-cn/docs/v4/doc/webrtc#config-candidate</span><br><span class="line">    # Overwrite by env SRS_RTC_SERVER_CANDIDATE</span><br><span class="line">    # default: *</span><br><span class="line">    candidate *;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">vhost rtc.vhost.srs.com &#123;</span><br><span class="line">    rtc &#123;</span><br><span class="line">        # Whether enable WebRTC server.</span><br><span class="line">        # Overwrite by env SRS_VHOST_RTC_ENABLED for all vhosts.</span><br><span class="line">        # default: off</span><br><span class="line">        enabled on;</span><br><span class="line">        # Whether support NACK.</span><br><span class="line">        # default: on</span><br><span class="line">        nack on;</span><br><span class="line">        # Whether support TWCC.</span><br><span class="line">        # default: on</span><br><span class="line">        twcc on;</span><br><span class="line">        # The timeout in seconds for session timeout.</span><br><span class="line">        # Client will send ping(STUN binding request) to server, we use it as heartbeat.</span><br><span class="line">        # default: 30</span><br><span class="line">        stun_timeout 30;</span><br><span class="line">        # The role of dtls when peer is actpass: passive or active</span><br><span class="line">        # default: passive</span><br><span class="line">        dtls_role passive;</span><br><span class="line">        # Whether enable transmuxing RTMP to RTC.</span><br><span class="line">        # If enabled, transcode aac to opus.</span><br><span class="line">        # Overwrite by env SRS_VHOST_RTC_RTMP_TO_RTC for all vhosts.</span><br><span class="line">        # default: off</span><br><span class="line">        rtmp_to_rtc off;</span><br><span class="line">        # Whether enable transmuxing RTC to RTMP.</span><br><span class="line">        # Overwrite by env SRS_VHOST_RTC_RTC_TO_RTMP for all vhosts.</span><br><span class="line">        # Default: off</span><br><span class="line">        rtc_to_rtmp off;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="配置要点说明"><a href="#配置要点说明" class="headerlink" title="配置要点说明"></a>配置要点说明</h3><p><strong>一、<code>rtc_server</code>（全局 RTC）</strong></p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>enabled</code></td>
+<td>是否开启 RTC 服务器，默认 <code>off</code>。</td>
+</tr>
+<tr>
+<td><code>listen</code></td>
+<td>RTC 侦听端口（UDP）。</td>
+</tr>
+<tr>
+<td><code>candidate</code></td>
+<td>对外宣告的候选地址；WebRTC 场景下通常必须配置正确。</td>
+</tr>
+<tr>
+<td><code>tcp.listen</code></td>
+<td>若启用 TCP 传媒体，为 WebRTC over TCP 的侦听端口。</td>
+</tr>
+</tbody></table>
+<p><strong>二、各 <code>vhost</code> 内的 <code>rtc</code> 块</strong></p>
+<table>
+<thead>
+<tr>
+<th>项</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>rtc.enabled</code></td>
+<td>该 vhost 是否启用 RTC，默认 <code>off</code>。</td>
+</tr>
+<tr>
+<td><code>rtc.rtmp_to_rtc</code></td>
+<td>是否 RTMP 转 RTC。</td>
+</tr>
+<tr>
+<td><code>rtc.rtc_to_rtmp</code></td>
+<td>是否 RTC 转 RTMP。</td>
+</tr>
+<tr>
+<td><code>rtc.stun_timeout</code></td>
+<td>会话超时（秒）。</td>
+</tr>
+<tr>
+<td><code>rtc.nack</code></td>
+<td>是否 NACK（丢包重传），默认 <code>on</code>。</td>
+</tr>
+<tr>
+<td><code>rtc.twcc</code></td>
+<td>是否 TWCC（拥塞反馈），默认 <code>on</code>。</td>
+</tr>
+<tr>
+<td><code>rtc.dtls_role</code></td>
+<td>DTLS 角色：<code>active</code> 为客户端主动，<code>passive</code> 为服务端被动。</td>
+</tr>
+</tbody></table>
+<h3 id="RTMP-推流-WebRTC-拉流示例"><a href="#RTMP-推流-WebRTC-拉流示例" class="headerlink" title="RTMP 推流 + WebRTC 拉流示例"></a>RTMP 推流 + WebRTC 拉流示例</h3><p>不同业务会加载不同 conf。例如 <strong>RTMP 推、WebRTC 拉</strong> 时，可改用 <code>rtmp2rtc.conf</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> CANDIDATE=<span class="string">&quot;192.168.1.10&quot;</span></span><br><span class="line">docker run --<span class="built_in">rm</span> --<span class="built_in">env</span> CANDIDATE=<span class="variable">$CANDIDATE</span> \</span><br><span class="line">  -p 1935:1935 -p 8080:8080 -p 1985:1985 -p 8000:8000/udp \</span><br><span class="line">  registry.cn-hangzhou.aliyuncs.com/ossrs/srs:6 \</span><br><span class="line">  objs/srs -c conf/rtmp2rtc.conf</span><br></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="云服务器部署与安全"><a href="#云服务器部署与安全" class="headerlink" title="云服务器部署与安全"></a>云服务器部署与安全</h2><ul>
+<li><strong>反向代理</strong>：可将 <strong>8080</strong>、<strong>1985</strong> 走反向代理，用固定域名提供 WebRTC 相关能力，减少直接暴露公网 IP；<strong>8000&#x2F;UDP</strong> 一般仍需在安全组&#x2F;防火墙放行。</li>
+<li><strong>HTTP API 回调</strong>：SRS 支持推流等事件的 HTTP 回调，可在回调里校验 token（例如带时效的临时密钥），由业务后端决定是否允许推流，从而加强直播链路安全。</li>
+<li><strong>白名单</strong>：可配置推流&#x2F;播放 IP 白名单，非名单内 IP 拒绝推流或播放。</li>
+</ul>
+<hr>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>部分场景下推流端<strong>只有视频、没有音频</strong>，拉流端需做兼容处理；否则可能在 DTLS 握手阶段出现异常，导致拉流失败。</p>
+<hr>
+<h2 id="官方文档"><a href="#官方文档" class="headerlink" title="官方文档"></a>官方文档</h2><ul>
+<li><a target="_blank" rel="noopener" href="https://ossrs.net/lts/zh-cn/docs/v6/doc/introduction">SRS 文档中心（中文）</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/SRS/" rel="tag"># SRS</a>
+              <a href="/tags/WebRTC/" rel="tag"># WebRTC</a>
+              <a href="/tags/Docker/" rel="tag"># Docker</a>
+              <a href="/tags/%E6%B5%81%E5%AA%92%E4%BD%93/" rel="tag"># 流媒体</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2026/03/28/Swagger/" rel="prev" title="Swagger">
+                  <i class="fa fa-angle-left"></i> Swagger
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2026</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">WyPerfect</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" rel="noopener" target="_blank">NexT.Gemini</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+  <div class="sidebar-dimmer"></div>
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+</body>
+</html>
